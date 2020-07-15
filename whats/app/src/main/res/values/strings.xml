@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">whats</string>
+    <string name="app_name">WhatsApp</string>
     <string name="erroTelefoneInvalidoFirebase">Telefone inválido! Verifique o telefone digitado e tente novamente.</string>
     <string name="solicitacaoInvalidaFirebase">Solicitação invalida! Tente novamente mais tarde.</string>
     <string name="erroCotaFirebase">Erro ao enviar a solicitação! Contate-nos sobre isso: agiliziumApps@gmail.com</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

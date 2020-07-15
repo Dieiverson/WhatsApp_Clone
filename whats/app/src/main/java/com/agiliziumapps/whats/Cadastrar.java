@@ -78,7 +78,7 @@ public class Cadastrar extends AppCompatActivity {
 
             @Override
             public void onVerificationFailed(FirebaseException e) {
-                txt_error.setText(R.string.erroTelefoneInvalidoFirebase);
+                txt_error.setText(R.string.erroTelefoneInvalidoFirebase + " - " + e.getMessage());
                 progressBar.setVisibility(View.GONE);
                 edtCodigo.setEnabled(false);
                 btnVerificarNumero.setEnabled(true);
