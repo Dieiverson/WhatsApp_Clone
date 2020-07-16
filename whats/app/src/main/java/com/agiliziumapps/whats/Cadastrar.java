@@ -42,7 +42,7 @@ public class Cadastrar extends AppCompatActivity {
         btnVerificarCodigo  = findViewById(R.id.btnVerificarCódigo);
         edtCodigo           = findViewById(R.id.edt_Codigo);
         edtNumero           = findViewById(R.id.edt_Numero);
-
+        Util.usuario = new Usuario();
 
         progressBar.setVisibility(View.GONE);
         txt_error.setText("");
@@ -113,7 +113,7 @@ public class Cadastrar extends AppCompatActivity {
                 mCallbacks);         // OnVerificationStateChangedCallbacks
     }
 
-    private void signInWithPhoneAuthCredential(PhoneAuthCredential credential) {
+    private void signInWithPhoneAuthCredential(final PhoneAuthCredential credential) {
        mAuth = FirebaseAuth.getInstance();
        mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -121,7 +121,8 @@ public class Cadastrar extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Util.firebaseUser = task.getResult().getUser();
-                            startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                            Util.usuario.setNumeroTelefone(edtNumero.getText().toString());
+                            startActivity(new Intent(getApplicationContext(),InserirDados.class));
                             finish();
                             return;
                         } else {

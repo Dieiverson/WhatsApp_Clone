@@ -7,7 +7,10 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -67,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         {
             case R.id.menuSair:
                 deslogarUsuário();
+                Intent intent = new Intent(this,Cadastrar.class);
+                startActivity(intent);
                 finish();
                 break;
             case R.id.menuConfiguracoes:
