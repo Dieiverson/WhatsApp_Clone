@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.agiliziumapps.whats.helper.Base64Custom;
+import com.agiliziumapps.whats.helper.UsuarioFirebase;
 
 public class InserirDados extends AppCompatActivity {
 
@@ -26,6 +27,7 @@ public class InserirDados extends AppCompatActivity {
                     try
                     {
                         Util.usuario.setNome(edtTextName.getText().toString());
+                        UsuarioFirebase.atualizarNomeUsuario(edtTextName.getText().toString());
                         String IdUsuario = Base64Custom.codificarBase64(Util.usuario.getNumeroTelefone());
                         Util.usuario.setId(IdUsuario);
                         Util.usuario.Salvar();

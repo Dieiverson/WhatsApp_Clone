@@ -1,12 +1,26 @@
 package com.agiliziumapps.whats;
 
+import com.agiliziumapps.whats.helper.UsuarioFirebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Usuario {
     private String Id;
     private String nome;
     private String numeroTelefone;
+    private String foto;
+
+    public String getFoto() {
+        return foto;
+    }
+
+    public void setFoto(String foto) {
+        this.foto = foto;
+    }
 
     public void Salvar()
     {
@@ -19,6 +33,23 @@ public class Usuario {
         {
             e.getMessage();
         }
+    }
+    public void atualizar()
+    {
+        String identificadorUsuario = UsuarioFirebase.getIdentificadorUsuario();
+        DatabaseReference DatabaseReference = ConfiguracaoFirebase.getDatabaseFirebase();
+        DatabaseReference usuarioReference = DatabaseReference.child("usuarios").child(identificadorUsuario);
+        usuarioReference.updateChildren(converterParaMap());
+    }
+
+    @Exclude
+    public Map<String,Object> converterParaMap()
+    {
+        HashMap<String,Object> usuarioMap = new HashMap<>();
+        usuarioMap.put("numeroTelefone",getNumeroTelefone());
+        usuarioMap.put("nome",getNome());
+        usuarioMap.put("foto",getFoto());
+        return  usuarioMap;
     }
 
     @Exclude
