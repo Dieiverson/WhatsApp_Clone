@@ -8,15 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.view.menu.MenuView;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.Usuario;
 import com.bumptech.glide.Glide;
-
 import java.util.List;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class contatosAdapter extends RecyclerView.Adapter<contatosAdapter.ViewHolder> {

@@ -49,11 +49,6 @@ public class configuracoesActivity extends AppCompatActivity {
     TextView editNome;
     private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
-    private String[] permissoesNecessarias = new String[]
-            {
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.CAMERA
-            };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +77,7 @@ public class configuracoesActivity extends AppCompatActivity {
         editNome.setText(usuarioFirebase.getDisplayName());
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        Permissao.validarPermissoes(permissoesNecessarias,this,1);
+
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,30 +186,5 @@ public class configuracoesActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        for(int permissaoResultado : grantResults)
-        {
-            if(permissaoResultado == PackageManager.PERMISSION_DENIED)
-            {
-                alertaValidacaoPermissao();
-            }
-        }
-    }
-    private void alertaValidacaoPermissao()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Permissões Negadas");
-        builder.setMessage("Para utilizar o app é necessário aceitar as permissões.");
-        builder.setCancelable(false);
-        builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        AlertDialog dialog = builder.create();
-        dialog.show();
-    }
+
 }

@@ -14,6 +14,15 @@ public class Usuario {
     private String numeroTelefone;
     private String foto;
 
+    public Usuario()
+    {
+
+    }
+    public Usuario(String nome, String numeroTelefone) {
+        this.nome = nome;
+        this.numeroTelefone = numeroTelefone;
+    }
+
     public String getFoto() {
         return foto;
     }
