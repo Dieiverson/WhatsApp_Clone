@@ -1,6 +1,8 @@
 package com.agiliziumapps.whats.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.agiliziumapps.whats.ChatObject;
 import com.agiliziumapps.whats.R;
+import com.agiliziumapps.whats.chatActivity;
+
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -29,9 +33,23 @@ public class conversasAdapter extends RecyclerView.Adapter<conversasAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(@NonNull conversasAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final conversasAdapter.ViewHolder holder, int position) {
 
         final ChatObject conversa = conversas.get(position);
+        holder.nome.setText(conversa.getChatId());
+        holder.nome.setText(conversa.getChatId());
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), chatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("chatID",conversas.get(holder.getAdapterPosition()).getChatId());
+                bundle.putString("nameUser",conversas.get(holder.getAdapterPosition()).getName());
+                intent.putExtras(bundle);
+                v.getContext().startActivity(intent);
+
+            }
+        });
         /*holder.nome.setText(usuario.getNome());
         holder.telefone.setText(usuario.getNumeroTelefone());
         if(usuario.getFoto() != null && !usuario.getFoto().equals(""))
@@ -43,13 +61,7 @@ public class conversasAdapter extends RecyclerView.Adapter<conversasAdapter.View
         {
             holder.foto.setImageResource(R.drawable.padrao);
         }*/
-        holder.nome.setText(conversa.getChatId());
-        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
     }
 
     @Override
