@@ -2,29 +2,22 @@ package com.agiliziumapps.whats;
 
 import android.database.Cursor;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.provider.ContactsContract;
-import android.provider.Telephony;
 import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.agiliziumapps.whats.adapter.contatosAdapter;
-import com.agiliziumapps.whats.helper.Base64Custom;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 
 public class fragment_contatos extends Fragment {
 
@@ -47,12 +40,12 @@ public class fragment_contatos extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_contatos, container, false);
-        recyclerViewListaContatos = view.findViewById(R.id.recyclerViewListaContatos);
+        recyclerViewListaContatos = view.findViewById(R.id.recyclerViewListaConversas);
         recyclerViewListaContatos.setNestedScrollingEnabled(false);
         recyclerViewListaContatos.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         recyclerViewListaContatos.setLayoutManager(layoutManager);
-        adapter = new contatosAdapter(listaDeContatos,getActivity());
+        adapter = new contatosAdapter(usuarios,getActivity());
         recyclerViewListaContatos.setAdapter(adapter);
         getContactList();
         return view;
@@ -61,7 +54,6 @@ public class fragment_contatos extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     private void getContactList()
@@ -84,38 +76,41 @@ public class fragment_contatos extends Fragment {
             Usuario mContact = new Usuario(name, phoneNumber);
             getUserDetail(mContact);
             listaDeContatos.add(mContact);
-            Collections.sort(listaDeContatos, new Comparator<Usuario>() {
-                @Override
-                public int compare(Usuario user2, Usuario user1)
-                {
-
-                    return  user2.getNome().compareTo(user1.getNome());
-                }
-            });
-            adapter.notifyDataSetChanged();
-
         }
     }
 
-    private void getUserDetail(Usuario listaDeContatos) {
-        DatabaseReference databaseReference = ConfiguracaoFirebase.getDatabaseFirebase();
-        String numero = Base64Custom.codificarBase64(listaDeContatos.getNumeroTelefone());
-        Query query = databaseReference.orderByChild("usuarios").equalTo(numero);
+    private void getUserDetail(Usuario contato) {
+        DatabaseReference databaseReference = ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios");
+        Query query = databaseReference.orderByChild("numeroTelefone").equalTo(contato.getNumeroTelefone());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists())
                 {
                    String phone = "",name = "", foto = "";
-                   for (DataSnapshot childSnap:snapshot.getChildren())
+                   for (DataSnapshot childSnap: snapshot.getChildren())
                    {
                        if(childSnap.child("numeroTelefone") != null)
+                            phone = childSnap.child("numeroTelefone").getValue().toString();
+                       if(childSnap.child("nome") != null)
+                           name = childSnap.child("nome").getValue().toString();
+                       if(childSnap.child("foto") != null)
+                           foto = childSnap.child("foto").getValue().toString();
+                       Usuario user = new Usuario(childSnap.getKey(), name,phone,foto);
+                       boolean exists = false;
+                       for (Usuario usuarioIterator : usuarios)
                        {
-                           phone = childSnap.child("numeroTelefone").toString();
-                           name = childSnap.child("nome").toString();
-                           foto = childSnap.child("foto").toString();
+                           if(usuarioIterator.getNumeroTelefone().equals(user.getNumeroTelefone()))
+                               exists = true;
                        }
+                       if(exists)
+                           continue;
+                       usuarios.add(user);
+                       adapter.notifyDataSetChanged();
+                       return;
                    }
+
+
                 }
             }
 

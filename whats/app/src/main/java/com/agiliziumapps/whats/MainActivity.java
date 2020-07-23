@@ -1,24 +1,19 @@
 package com.agiliziumapps.whats;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-
 import com.agiliziumapps.whats.helper.Permissao;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -32,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
     Toolbar toolbarPrincipal;
     private FirebaseUser user;
+    public static Context ctx;
     private String[] permissoesNecessarias = new String[]
             {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -43,29 +39,26 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if(Permissao.validarPermissoes(permissoesNecessarias,this,1))
+        {
+            Thread thread = new Thread() {
+                @Override
+                public void run() {
+                    carregarTabs();
+                }
+            };
+            thread.start();
+        }
+        ctx = this;
         toolbarPrincipal = findViewById(R.id.toolbarPrincipal);
         toolbarPrincipal.setTitle("WhatsApp");
         setSupportActionBar(toolbarPrincipal);
-        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getSupportFragmentManager(),
-                                        FragmentPagerItems.with(this).
-                                                add("Conversas", conversas_fragment.class).
-                                                add("Contatos",fragment_contatos.class).create());
-        ViewPager viewPager = findViewById(R.id.viewpager);
-        viewPager.setAdapter(adapter);
-        SmartTabLayout viewPagerTab = findViewById(R.id.viewpagertab);
-        viewPagerTab.setViewPager(viewPager);
        user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null){
             startActivity(new Intent(getApplicationContext(),Cadastrar.class));
             finish();
             return;
         }
-        if(!isGooglePlayServicesAvailable(this))
-        {
-            return;
-        }
-        Permissao.validarPermissoes(permissoesNecessarias,this,1);
-
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -75,8 +68,21 @@ public class MainActivity extends AppCompatActivity {
             if(permissaoResultado == PackageManager.PERMISSION_DENIED)
             {
                 alertaValidacaoPermissao();
+                return;
             }
         }
+    }
+
+    private void carregarTabs()
+    {
+        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getSupportFragmentManager(),
+                FragmentPagerItems.with(this).
+                        add("Conversas", conversas_fragment.class).
+                        add("Contatos",fragment_contatos.class).create());
+        ViewPager viewPager = findViewById(R.id.viewpager);
+        viewPager.setAdapter(adapter);
+        SmartTabLayout viewPagerTab = findViewById(R.id.viewpagertab);
+        viewPagerTab.setViewPager(viewPager);
     }
     private void alertaValidacaoPermissao()
     {

@@ -3,7 +3,6 @@ package com.agiliziumapps.whats;
 import com.agiliziumapps.whats.helper.UsuarioFirebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +21,16 @@ public class Usuario {
         this.nome = nome;
         this.numeroTelefone = numeroTelefone;
     }
+
+    public Usuario(String id,String nome, String numeroTelefone, String foto)
+    {
+        this.Id = id;
+        this.nome = nome;
+        this.numeroTelefone = numeroTelefone;
+        this.foto = foto;
+    }
+
+
 
     public String getFoto() {
         return foto;

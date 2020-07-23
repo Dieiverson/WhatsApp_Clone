@@ -31,6 +31,9 @@ public class Permissao
             listaPermissoes.toArray(novasPermissoes);
             ActivityCompat.requestPermissions(activity,novasPermissoes,requestCode);
         }
-        return true;
+        else {
+            return true;
+        }
+        return false;
     }
 }

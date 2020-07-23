@@ -6,7 +6,7 @@
     tools:context=".fragment_contatos">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewListaContatos"
+        android:id="@+id/recyclerViewListaConversas"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical" />

@@ -30,6 +30,7 @@ public class InserirDados extends AppCompatActivity {
                         UsuarioFirebase.atualizarNomeUsuario(edtTextName.getText().toString());
                         String IdUsuario = Base64Custom.codificarBase64(Util.usuario.getNumeroTelefone());
                         Util.usuario.setId(IdUsuario);
+                        Util.usuario.setFoto("");
                         Util.usuario.Salvar();
                         startActivity(new Intent(getApplicationContext(),MainActivity.class));
                         finish();

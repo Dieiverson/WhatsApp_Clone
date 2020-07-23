@@ -122,7 +122,7 @@ public class Cadastrar extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Util.firebaseUser = task.getResult().getUser();
                             Util.usuario.setNumeroTelefone(edtNumero.getText().toString());
-                            startActivity(new Intent(getApplicationContext(),InserirDados.class));
+                            startActivity(new Intent(MainActivity.ctx,InserirDados.class));
                             finish();
                             return;
                         } else {
