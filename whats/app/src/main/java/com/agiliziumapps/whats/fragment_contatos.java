@@ -25,20 +25,20 @@ public class fragment_contatos extends Fragment {
     private contatosAdapter adapter;
     private ArrayList<Usuario> usuarios = new ArrayList<>();
     private ArrayList<Usuario> listaDeContatos= new ArrayList<>();
-    public fragment_contatos() {
+    public fragment_contatos()
+    {
 
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.fragment_contatos, container, false);
         recyclerViewListaContatos = view.findViewById(R.id.recyclerViewListaConversas);
         recyclerViewListaContatos.setNestedScrollingEnabled(false);
@@ -109,8 +109,6 @@ public class fragment_contatos extends Fragment {
                        adapter.notifyDataSetChanged();
                        return;
                    }
-
-
                 }
             }
 
@@ -131,7 +129,6 @@ public class fragment_contatos extends Fragment {
             {
                 iso = telephonyManager.getNetworkCountryIso();
             }
-
         }
         return CountryToPhonePrefix.getPhone(iso);
     }
@@ -139,8 +136,5 @@ public class fragment_contatos extends Fragment {
     @Override
     public void onStop() {
         super.onStop();
-
     }
-
-
 }

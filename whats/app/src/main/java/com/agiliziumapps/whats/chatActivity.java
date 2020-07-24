@@ -1,9 +1,12 @@
 package com.agiliziumapps.whats;
 
+import android.net.Uri;
 import android.os.Bundle;
 
-import com.agiliziumapps.whats.adapter.MessageAdapter;
+import com.agiliziumapps.whats.adapter.MensagensAdapter;
+import com.agiliziumapps.whats.helper.Base64Custom;
 import com.agiliziumapps.whats.helper.UsuarioFirebase;
+import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -18,78 +21,104 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.TextView;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class chatActivity extends AppCompatActivity {
 
-    private RecyclerView mChat;
-    private RecyclerView.Adapter mChatAdapter;
-    private RecyclerView.LayoutManager mChatLayoutManager;
     private FloatingActionButton btnSend;
-    ArrayList<MessageObject> messageList;
-    String chatID, nameUser;
-    DatabaseReference dbMessages;
+    private Usuario usuarioDestinatario;
     private TextView txtViewNomeChat;
+    private CircleImageView circleImageFoto;
+    private EditText mensagem;
+    private String idUsuarioRemetente;
+    private String idUsuarioDestinatario;
+    private RecyclerView recyclerViewMessages;
+    private MensagensAdapter adapter;
+    private DatabaseReference database;
+    private DatabaseReference mensagensRef;
+    List<Mensagem> mensagens;
+
+    ChildEventListener childEventListenerMensagens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        chatID = getIntent().getExtras().getString("chatID");
-        nameUser = getIntent().getExtras().getString("nameUser");
+        circleImageFoto         = findViewById(R.id.circleImageFoto);
+        recyclerViewMessages    = findViewById(R.id.recyclerViewMessages);
+        btnSend                 = findViewById(R.id.btnSend);
+        mensagem                = findViewById(R.id.edtMessage);
+        txtViewNomeChat         = findViewById(R.id.txtViewNomeChat);
         Toolbar toolbar = findViewById(R.id.toolbar);
+        mensagens = new ArrayList<>();
         toolbar.setTitle("");
-        btnSend = findViewById(R.id.btnSend);
-        txtViewNomeChat = findViewById(R.id.txtViewNomeChat);
-        //txtViewNomeChat.setText(nameUser);
-        dbMessages = ConfiguracaoFirebase.getDatabaseFirebase().child("chat").child(chatID);
         setSupportActionBar(toolbar);
+        Bundle bundle = getIntent().getExtras();
+        if(bundle != null)
+        {
+            usuarioDestinatario = (Usuario)bundle.getSerializable("chatContato");
+            txtViewNomeChat.setText(usuarioDestinatario.getNome());
+            String foto = usuarioDestinatario.getFoto();
+            if(foto != null)
+            {
+                Uri url = Uri.parse(foto);
+                Glide.with(chatActivity.this).load(url).into(circleImageFoto);
+            }
+            else
+            {
+                circleImageFoto.setImageResource(R.drawable.padrao);
+            }
+            idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getNumeroTelefone());
+        }
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
             }
         });
-        messageList = new ArrayList<>();
-        inicializeRecyclerView();
-        getChatMessages();
+        adapter = new MensagensAdapter(mensagens, getApplicationContext());
+        idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
+        database = ConfiguracaoFirebase.getDatabaseFirebase();
+        mensagensRef = database.child("mensagens").child(idUsuarioRemetente).child(idUsuarioDestinatario);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        recyclerViewMessages.setLayoutManager(layoutManager);
+        recyclerViewMessages.setHasFixedSize(true);
+        recyclerViewMessages.setAdapter(adapter);
     }
 
-    private void sendMessage()
+    private void salvarMensagem(Mensagem mensagem)
     {
-        EditText message = findViewById(R.id.edtMessage);
-        if(!message.getText().toString().isEmpty())
-        {
-            DatabaseReference newMessageDb = dbMessages.push();
-            Map newMassageMap = new HashMap<>();
-            newMassageMap.put("text",message.getText().toString());
-            newMassageMap.put("creator", UsuarioFirebase.getIdentificadorUsuario());
-            newMessageDb.updateChildren(newMassageMap);
-        }
-        message.setText(null);
+        DatabaseReference database = ConfiguracaoFirebase.getDatabaseFirebase();
+        DatabaseReference mensagemRef = database.child("mensagens");
+        mensagemRef.child(idUsuarioRemetente).child(idUsuarioDestinatario).push().setValue(mensagem);
     }
-    private void getChatMessages()
+
+    @Override
+    protected void onStart() {
+        recuperarMensagens();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mensagensRef.removeEventListener(childEventListenerMensagens);
+        super.onStop();
+    }
+
+    private void recuperarMensagens()
     {
-        dbMessages.addChildEventListener(new ChildEventListener() {
+        childEventListenerMensagens = mensagensRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                if(snapshot.exists())
-                {
-                    String text = "", creatorId = "";
-                    if(snapshot.child("text").getValue() != null)
-                        text = snapshot.child("text").getValue().toString();
-                    if(snapshot.child("creator").getValue() != null)
-                        creatorId = snapshot.child("creator").getValue().toString();
-                   MessageObject messageObject = new MessageObject(snapshot.getKey(),text,creatorId);
-                   messageList.add(messageObject);
-                   mChatLayoutManager.scrollToPosition(messageList.size()-1);
-                   mChatAdapter.notifyDataSetChanged();
-                }
+                Mensagem mensagem = snapshot.getValue(Mensagem.class);
+                mensagens.add(mensagem);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -112,17 +141,19 @@ public class chatActivity extends AppCompatActivity {
 
             }
         });
-
     }
-    private void inicializeRecyclerView()
+
+    private void sendMessage()
     {
-        messageList = new ArrayList<>();
-        mChat = findViewById(R.id.recyclerViewMessages);
-        mChat.setNestedScrollingEnabled(false);
-        mChat.setHasFixedSize(true);
-        mChatLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
-        mChat.setLayoutManager(mChatLayoutManager);
-        mChatAdapter = new MessageAdapter(messageList,getApplicationContext());
-        mChat.setAdapter(mChatAdapter);
+        String Textomsg = mensagem.getText().toString();
+        if(!Textomsg.isEmpty())
+        {
+            Mensagem msg = new Mensagem();
+            msg.setIdUsuario(idUsuarioRemetente);
+            msg.setMensagem(Textomsg);
+            salvarMensagem(msg);
+            mensagem.setText("");
+
+        }
     }
 }

@@ -100,8 +100,6 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
