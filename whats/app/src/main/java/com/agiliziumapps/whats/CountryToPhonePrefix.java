@@ -5,7 +5,10 @@ import java.util.Map;
 
 public class CountryToPhonePrefix {
     public static String getPhone(String code) {
-        return country2phone.get(code.toUpperCase());
+        if(code != null)
+            return country2phone.get(code.toUpperCase());
+        else
+            return "+55";
     }
     public static Map<String, String> getAll(){
         return country2phone;

@@ -21,7 +21,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".chatActivity"
-            android:label="@string/title_activity_chat"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".InserirDados" />
         <activity
