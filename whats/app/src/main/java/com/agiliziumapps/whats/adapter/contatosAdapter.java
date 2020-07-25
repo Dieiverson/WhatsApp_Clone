@@ -10,21 +10,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.agiliziumapps.whats.ConfiguracaoFirebase;
+
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.Usuario;
-import com.agiliziumapps.whats.chatActivity;
-import com.agiliziumapps.whats.helper.Base64Custom;
-import com.agiliziumapps.whats.helper.UsuarioFirebase;
+import com.agiliziumapps.whats.ChatActivity;
 import com.bumptech.glide.Glide;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class contatosAdapter extends RecyclerView.Adapter<contatosAdapter.ViewHolder> {
+public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHolder> {
 
     List<Usuario> contatos;
     Context context;
-    public contatosAdapter(List<Usuario> listaContatos, Context c) {
+    public ContatosAdapter(List<Usuario> listaContatos, Context c) {
         this.contatos = listaContatos;
         this.context = c;
     }
@@ -60,7 +58,7 @@ public class contatosAdapter extends RecyclerView.Adapter<contatosAdapter.ViewHo
                 //ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios").child(UsuarioFirebase.getIdentificadorUsuario()).child("chat").child(key).setValue(true);
                 //ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios").child(Base64Custom.codificarBase64(usuario.getNumeroTelefone())).child("chat").child(key).setValue(true);
 
-                Intent i = new Intent(v.getContext(), chatActivity.class);
+                Intent i = new Intent(v.getContext(), ChatActivity.class);
                 i.putExtra("chatContato",user);
                 context.startActivity(i);
             }

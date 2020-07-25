@@ -1,10 +1,8 @@
 package com.agiliziumapps.whats;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -17,14 +15,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class conversas_fragment extends Fragment {
+public class Conversas_fragment extends Fragment {
     RecyclerView recyclerViewConversas;
     private List<Conversa> listaConversa;
     private ConversasAdapter adapter;
+    private ChildEventListener childEventListenerConversas;
 
-    public conversas_fragment() {
+    public Conversas_fragment() {
     }
 
     @Override
@@ -37,23 +37,38 @@ public class conversas_fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_conversas_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_conversas, container, false);
         recyclerViewConversas = view.findViewById(R.id.recyclerViewListaConversas);
+        listaConversa = new ArrayList<>();
         adapter = new ConversasAdapter(listaConversa,getActivity());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewConversas.setLayoutManager(layoutManager);
         recyclerViewConversas.setHasFixedSize(true);
         recyclerViewConversas.setAdapter(adapter);
-
         return view;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        listaConversa.clear();
+        recuperarConversas();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        conversasRef.removeEventListener(childEventListenerConversas);
+    }
+
     public void recuperarConversas()
     {
-
-        conversasRef.addChildEventListener(new ChildEventListener() {
+        childEventListenerConversas = conversasRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
+                Conversa conversa = snapshot.getValue(Conversa.class);
+                listaConversa.add(conversa);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -75,7 +90,7 @@ public class conversas_fragment extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
-        })
+        });
 
     }
 }

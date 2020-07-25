@@ -10,6 +10,20 @@ public class CountryToPhonePrefix {
         else
             return "+55";
     }
+    public static String getCountrySigla(String code){
+        String countryFound = null;
+        for (Map.Entry<String, String> entry : country2phone.entrySet()) {
+            if (entry.getValue().equals(code))
+            {
+                countryFound = entry.getKey();
+                break;
+            }
+        }
+        if(countryFound==null){
+            countryFound="BR";
+        }
+        return countryFound;
+    }
     public static Map<String, String> getAll(){
         return country2phone;
     }

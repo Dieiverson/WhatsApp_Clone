@@ -26,7 +26,7 @@ import java.io.ByteArrayOutputStream;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class configuracoesActivity extends AppCompatActivity {
+public class ConfiguracoesActivity extends AppCompatActivity {
     Toolbar toolbarPrincipal;
     ImageButton camera,imgAtualizarNome;
     CircleImageView profile_image;
@@ -54,7 +54,7 @@ public class configuracoesActivity extends AppCompatActivity {
         Uri url = usuarioFirebase.getPhotoUrl();
         if(url != null)
         {
-            Glide.with(configuracoesActivity.this).load(url).into(profile_image);
+            Glide.with(ConfiguracoesActivity.this).load(url).into(profile_image);
         }
         else
         {

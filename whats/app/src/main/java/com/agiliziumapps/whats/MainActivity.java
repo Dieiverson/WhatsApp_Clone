@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
     {
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getSupportFragmentManager(),
                 FragmentPagerItems.with(this).
-                        add("Conversas", conversas_fragment.class).
-                        add("Contatos",fragment_contatos.class).create());
+                        add("Conversas", Conversas_fragment.class).
+                        add("Contatos", Contatos_fragment.class).create());
         ViewPager viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
         SmartTabLayout viewPagerTab = findViewById(R.id.viewpagertab);
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void abrirConfiguracoes()
     {
-        Intent intent = new Intent(this,configuracoesActivity.class);
+        Intent intent = new Intent(this, ConfiguracoesActivity.class);
         startActivity(intent);
     }
 

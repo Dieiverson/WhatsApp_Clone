@@ -32,11 +32,11 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
         View item;
        if(viewType == TIPO_REMETENTE)
        {
-            item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adaptermensagemremetente,parent,false);
+            item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_mensagem_remetente,parent,false);
        }
        else
        {
-           item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adaptermensagemdestinatario,parent,false);
+           item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_mensagem_destinatario,parent,false);
        }
        return new viewHolder(item);
     }

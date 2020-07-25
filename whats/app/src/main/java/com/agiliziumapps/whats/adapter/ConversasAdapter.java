@@ -1,6 +1,7 @@
 package com.agiliziumapps.whats.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.agiliziumapps.whats.Conversa;
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.Usuario;
+import com.agiliziumapps.whats.ChatActivity;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
@@ -52,7 +54,20 @@ public class ConversasAdapter extends RecyclerView.Adapter<ConversasAdapter.View
         {
             holder.foto.setImageResource(R.drawable.padrao);
         }
+        final Usuario user = conversas.get(position).getUsuarioExibicao();
 
+        holder.mLinearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //String key = ConfiguracaoFirebase.getDatabaseFirebase().child("chat").push().getKey();
+                //ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios").child(UsuarioFirebase.getIdentificadorUsuario()).child("chat").child(key).setValue(true);
+                //ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios").child(Base64Custom.codificarBase64(usuario.getNumeroTelefone())).child("chat").child(key).setValue(true);
+
+                Intent i = new Intent(v.getContext(), ChatActivity.class);
+                i.putExtra("chatContato",user);
+                context.startActivity(i);
+            }
+        });
     }
 
     @Override

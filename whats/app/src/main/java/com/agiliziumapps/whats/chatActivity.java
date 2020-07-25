@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-
 import com.agiliziumapps.whats.adapter.MensagensAdapter;
 import com.agiliziumapps.whats.helper.Base64Custom;
 import com.agiliziumapps.whats.helper.UsuarioFirebase;
@@ -20,30 +19,25 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class chatActivity extends AppCompatActivity {
+public class ChatActivity extends AppCompatActivity {
 
     private FloatingActionButton btnSend;
     private Usuario usuarioDestinatario;
@@ -61,7 +55,6 @@ public class chatActivity extends AppCompatActivity {
     private StorageReference storageReference;
     private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
-
     ChildEventListener childEventListenerMensagens;
 
     @Override
@@ -88,7 +81,7 @@ public class chatActivity extends AppCompatActivity {
             if(foto != null)
             {
                 Uri url = Uri.parse(foto);
-                Glide.with(chatActivity.this).load(url).into(circleImageFoto);
+                Glide.with(ChatActivity.this).load(url).into(circleImageFoto);
             }
             else
             {
@@ -247,8 +240,6 @@ public class chatActivity extends AppCompatActivity {
         });
     }
 
-
-
     private void sendMessage()
     {
         String Textomsg = mensagem.getText().toString();
@@ -259,7 +250,6 @@ public class chatActivity extends AppCompatActivity {
             msg.setMensagem(Textomsg);
             salvarMensagem(msg);
             mensagem.setText("");
-
         }
     }
 }
