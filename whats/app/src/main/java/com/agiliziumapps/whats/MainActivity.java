@@ -53,12 +53,6 @@ public class MainActivity extends AppCompatActivity {
         toolbarPrincipal = findViewById(R.id.toolbarPrincipal);
         toolbarPrincipal.setTitle("WhatsApp");
         setSupportActionBar(toolbarPrincipal);
-       user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null){
-            startActivity(new Intent(getApplicationContext(),Cadastrar.class));
-            finish();
-            return;
-        }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -70,6 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 alertaValidacaoPermissao();
                 return;
             }
+        }
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            startActivity(new Intent(getApplicationContext(),Cadastrar.class));
+            finish();
+            return;
         }
     }
 

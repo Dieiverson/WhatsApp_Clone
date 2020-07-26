@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -28,7 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ConfiguracoesActivity extends AppCompatActivity {
     Toolbar toolbarPrincipal;
-    ImageButton camera,imgAtualizarNome;
+    ImageButton imgAtualizarNome;
     CircleImageView profile_image;
     StorageReference storageReference;
     String identificadorUsuario;
@@ -43,7 +46,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
         toolbarPrincipal        = findViewById(R.id.toolbarPrincipal);
         storageReference        = ConfiguracaoFirebase.getStorageFirebase();
         identificadorUsuario    = UsuarioFirebase.getIdentificadorUsuario();
-        camera                  = findViewById(R.id.imgButtonCamera);
         profile_image           = findViewById(R.id.profile_image);
         editNome                = findViewById(R.id.editNome);
         imgAtualizarNome        = findViewById(R.id.imgAtualizarNome);
@@ -65,25 +67,10 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-
-        camera.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                if(i.resolveActivity(getPackageManager()) != null)
-                {
-                    startActivityForResult(i,SELECAO_CAMERA);
-                }
-            }
-        });
         profile_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                if(i.resolveActivity(getPackageManager()) != null)
-                {
-                    startActivityForResult(i,SELECAO_GALERIA);
-                }
+                alertaEscolherFonteImagem();
             }
         });
 
@@ -94,13 +81,10 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                 {
                     usuarioLogado.setNome(editNome.getText().toString());
                     usuarioLogado.atualizar();
-                    Toast.makeText(getApplicationContext(),"Nome alterado com sucesso!",Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(),"Nome alterado com sucesso!",Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
-
-
     }
 
     @Override
@@ -152,7 +136,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                         }
                     });
                 }
-
             }
             catch (Exception e)
             {
@@ -160,6 +143,37 @@ public class ConfiguracoesActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void alertaEscolherFonteImagem()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Carregar foto:");
+        builder.setMessage("Selecione de onde deseja carregar a foto:");
+        builder.setCancelable(true);
+        builder.setNeutralButton("Galeria", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            Intent i = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            if(i.resolveActivity(getPackageManager()) != null)
+            {
+                startActivityForResult(i,SELECAO_GALERIA);
+            }
+        }
+        });
+        builder.setPositiveButton("Câmera", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if(i.resolveActivity(getPackageManager()) != null)
+                {
+                    startActivityForResult(i,SELECAO_CAMERA);
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     public void atualizaFotoUsuario(Uri url)

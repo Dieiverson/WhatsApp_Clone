@@ -1,4 +1,6 @@
 package com.agiliziumapps.whats;
 
-public class MyFirebaseMessagingService {
+import com.google.firebase.messaging.FirebaseMessagingService;
+
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
 }
