@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         if(Permissao.validarPermissoes(permissoesNecessarias,this,1))
         {
             Thread thread = new Thread() {
@@ -48,6 +49,12 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             thread.start();
+        }
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null){
+            startActivity(new Intent(getApplicationContext(),Cadastrar.class));
+            finish();
+            return;
         }
         ctx = this;
         toolbarPrincipal = findViewById(R.id.toolbarPrincipal);
@@ -65,19 +72,13 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
         }
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null){
-            startActivity(new Intent(getApplicationContext(),Cadastrar.class));
-            finish();
-            return;
-        }
     }
 
     private void carregarTabs()
     {
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(getSupportFragmentManager(),
                 FragmentPagerItems.with(this).
-                        add("Conversas", Conversas_fragment.class).
+                        add("Conversas", conversas_fragment.class).
                         add("Contatos", Contatos_fragment.class).create());
         ViewPager viewPager = findViewById(R.id.viewpager);
         viewPager.setAdapter(adapter);
@@ -136,7 +137,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public void abrirConfiguracoes()
     {
-        Intent intent = new Intent(this, ConfiguracoesActivity.class);
+        Intent intent = new Intent(this, configuracoesActivity.class);
         startActivity(intent);
     }
 

@@ -20,12 +20,12 @@
         android:theme="@style/AppTheme">
         <activity android:name=".VerificarNumero"></activity>
         <activity
-            android:name=".ChatActivity"
+            android:name=".chatActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".InserirDados" />
         <activity
-            android:name=".ConfiguracoesActivity"
+            android:name=".configuracoesActivity"
             android:parentActivityName=".MainActivity" />
         <activity android:name=".FindUsers" />
         <activity android:name=".Cadastrar" />

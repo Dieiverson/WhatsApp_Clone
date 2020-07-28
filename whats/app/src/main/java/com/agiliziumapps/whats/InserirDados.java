@@ -42,8 +42,7 @@ public class InserirDados extends AppCompatActivity {
                 {
                     Util.usuario.setNome(edtTextName.getText().toString());
                     UsuarioFirebase.atualizarNomeUsuario(edtTextName.getText().toString());
-                    String IdUsuario = Base64Custom.codificarBase64(Util.usuario.getNumeroTelefone());
-                    Util.usuario.setId(IdUsuario);
+                    Util.usuario.setId(UsuarioFirebase.getIdentificadorUsuario());
                     Util.usuario.setFoto("");
                     Util.usuario.Salvar();
                     startActivity(new Intent(getApplicationContext(),MainActivity.class));
@@ -52,7 +51,7 @@ public class InserirDados extends AppCompatActivity {
                 }
                 catch (Exception e)
                 {
-
+                    e.printStackTrace();
                 }
 
             }

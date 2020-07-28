@@ -13,16 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.Usuario;
-import com.agiliziumapps.whats.ChatActivity;
+import com.agiliziumapps.whats.chatActivity;
 import com.bumptech.glide.Glide;
 import java.util.List;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHolder> {
+public class contatosAdapter extends RecyclerView.Adapter<contatosAdapter.ViewHolder> {
 
     List<Usuario> contatos;
     Context context;
-    public ContatosAdapter(List<Usuario> listaContatos, Context c) {
+    public contatosAdapter(List<Usuario> listaContatos, Context c) {
         this.contatos = listaContatos;
         this.context = c;
     }
@@ -58,7 +58,7 @@ public class ContatosAdapter extends RecyclerView.Adapter<ContatosAdapter.ViewHo
                 //ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios").child(UsuarioFirebase.getIdentificadorUsuario()).child("chat").child(key).setValue(true);
                 //ConfiguracaoFirebase.getDatabaseFirebase().child("usuarios").child(Base64Custom.codificarBase64(usuario.getNumeroTelefone())).child("chat").child(key).setValue(true);
 
-                Intent i = new Intent(v.getContext(), ChatActivity.class);
+                Intent i = new Intent(v.getContext(), chatActivity.class);
                 i.putExtra("chatContato",user);
                 context.startActivity(i);
             }

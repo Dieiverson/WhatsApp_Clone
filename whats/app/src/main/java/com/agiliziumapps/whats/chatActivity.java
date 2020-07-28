@@ -17,6 +17,8 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.storage.OnPausedListener;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import androidx.annotation.NonNull;
@@ -37,7 +39,7 @@ import java.util.List;
 import java.util.UUID;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatActivity extends AppCompatActivity {
+public class chatActivity extends AppCompatActivity {
 
     private FloatingActionButton btnSend;
     private Usuario usuarioDestinatario;
@@ -56,6 +58,8 @@ public class ChatActivity extends AppCompatActivity {
     private static final int SELECAO_CAMERA = 100;
     private static final int SELECAO_GALERIA = 200;
     ChildEventListener childEventListenerMensagens;
+    RecyclerView.LayoutManager layoutManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +85,7 @@ public class ChatActivity extends AppCompatActivity {
             if(foto != null)
             {
                 Uri url = Uri.parse(foto);
-                Glide.with(ChatActivity.this).load(url).into(circleImageFoto);
+                Glide.with(chatActivity.this).load(url).into(circleImageFoto);
             }
             else
             {
@@ -99,7 +103,7 @@ public class ChatActivity extends AppCompatActivity {
         idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
         database = ConfiguracaoFirebase.getDatabaseFirebase();
         mensagensRef = database.child("mensagens").child(idUsuarioRemetente).child(idUsuarioDestinatario);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+        layoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewMessages.setLayoutManager(layoutManager);
         recyclerViewMessages.setHasFixedSize(true);
         recyclerViewMessages.setAdapter(adapter);
@@ -120,6 +124,7 @@ public class ChatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK)
         {
+            layoutManager.scrollToPosition(mensagens.size()-1);
             Bitmap imagem = null;
             try {
                 switch (requestCode)
@@ -142,18 +147,18 @@ public class ChatActivity extends AppCompatActivity {
                           child("imagens").
                           child("fotos").
                           child(idUsuarioRemetente).
-                          child(nomeImagem + "jpg");
+                          child(nomeImagem);
                     UploadTask uploadTask  = imagemRef.putBytes(dadosImagem);
                     uploadTask.addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(getApplicationContext(),"Erro ao enviar upload da imagem!",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Erro ao fazer upload da imagem!",Toast.LENGTH_SHORT).show();
                         }
                     });
                     uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot)
+                        {
                             imagemRef.getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Uri> task) {
@@ -167,6 +172,19 @@ public class ChatActivity extends AppCompatActivity {
                             });
                         }
                     });
+                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
+                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
+                            System.out.println("Upload is " + progress + "% done");
+                        }
+                    }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
+                            System.out.println("Upload is paused");
+                        }
+                    });
+
                 }
 
             }
@@ -177,7 +195,6 @@ public class ChatActivity extends AppCompatActivity {
         }
 
     }
-
     private void salvarMensagem(Mensagem mensagem)
     {
         DatabaseReference database = ConfiguracaoFirebase.getDatabaseFirebase();
@@ -215,6 +232,7 @@ public class ChatActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 Mensagem mensagem = snapshot.getValue(Mensagem.class);
                 mensagens.add(mensagem);
+                layoutManager.scrollToPosition(mensagens.size()-1);
                 adapter.notifyDataSetChanged();
             }
 

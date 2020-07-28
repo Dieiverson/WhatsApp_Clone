@@ -18,13 +18,13 @@ import com.google.firebase.database.DatabaseReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Conversas_fragment extends Fragment {
+public class conversas_fragment extends Fragment {
     RecyclerView recyclerViewConversas;
     private List<Conversa> listaConversa;
     private ConversasAdapter adapter;
     private ChildEventListener childEventListenerConversas;
 
-    public Conversas_fragment() {
+    public conversas_fragment() {
     }
 
     @Override

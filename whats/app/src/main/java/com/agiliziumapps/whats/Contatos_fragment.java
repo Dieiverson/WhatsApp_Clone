@@ -11,7 +11,7 @@ import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.agiliziumapps.whats.adapter.ContatosAdapter;
+import com.agiliziumapps.whats.adapter.contatosAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -22,7 +22,7 @@ import java.util.ArrayList;
 public class Contatos_fragment extends Fragment {
 
     private RecyclerView recyclerViewListaContatos;
-    private ContatosAdapter adapter;
+    private contatosAdapter adapter;
     private ArrayList<Usuario> usuarios = new ArrayList<>();
     private ArrayList<Usuario> listaDeContatos= new ArrayList<>();
     public Contatos_fragment()
@@ -45,7 +45,7 @@ public class Contatos_fragment extends Fragment {
         recyclerViewListaContatos.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.VERTICAL,false);
         recyclerViewListaContatos.setLayoutManager(layoutManager);
-        adapter = new ContatosAdapter(usuarios,getActivity());
+        adapter = new contatosAdapter(usuarios,getActivity());
         recyclerViewListaContatos.setAdapter(adapter);
         getContactList();
         return view;

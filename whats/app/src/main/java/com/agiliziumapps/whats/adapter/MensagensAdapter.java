@@ -13,6 +13,7 @@ import com.agiliziumapps.whats.Mensagem;
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.helper.UsuarioFirebase;
 import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.viewHolder> {
@@ -49,7 +50,11 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
         if(img != null)
         {
             Uri url = Uri.parse(img);
-            Glide.with(context).load(url).into(holder.imagem);
+            holder.imagem.setVisibility(View.VISIBLE);
+            Glide.with(context)
+                    .load(url)
+                    .thumbnail(Glide.with(context).load(R.drawable.loading))
+                    .into(holder.imagem);
             holder.mensagem.setVisibility(View.GONE);
         }
         else
