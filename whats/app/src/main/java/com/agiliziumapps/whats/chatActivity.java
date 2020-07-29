@@ -1,6 +1,7 @@
 package com.agiliziumapps.whats;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,10 +18,10 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.storage.OnPausedListener;
-import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.google.gson.Gson;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,6 +60,7 @@ public class chatActivity extends AppCompatActivity {
     private static final int SELECAO_GALERIA = 200;
     ChildEventListener childEventListenerMensagens;
     RecyclerView.LayoutManager layoutManager;
+    SharedPreferences sharedPreferences ;
 
 
     @Override
@@ -76,37 +78,20 @@ public class chatActivity extends AppCompatActivity {
         storageReference = ConfiguracaoFirebase.getStorageFirebase();
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         Bundle bundle = getIntent().getExtras();
-        if(bundle != null)
-        {
-            usuarioDestinatario = (Usuario)bundle.getSerializable("chatContato");
-            txtViewNomeChat.setText(usuarioDestinatario.getNome());
-            String foto = usuarioDestinatario.getFoto();
-            if(foto != null)
-            {
-                Uri url = Uri.parse(foto);
-                Glide.with(chatActivity.this).load(url).into(circleImageFoto);
-            }
-            else
-            {
-                circleImageFoto.setImageResource(R.drawable.padrao);
-            }
-            idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getNumeroTelefone());
+        if(bundle != null) {
+            usuarioDestinatario = (Usuario) bundle.getSerializable("chatContato");
         }
+
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 sendMessage();
             }
         });
-        adapter = new MensagensAdapter(mensagens, getApplicationContext());
-        idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
-        database = ConfiguracaoFirebase.getDatabaseFirebase();
-        mensagensRef = database.child("mensagens").child(idUsuarioRemetente).child(idUsuarioDestinatario);
-        layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewMessages.setLayoutManager(layoutManager);
-        recyclerViewMessages.setHasFixedSize(true);
-        recyclerViewMessages.setAdapter(adapter);
+
         imgCameraSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -117,6 +102,32 @@ public class chatActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void carregarInicio() {
+        if(usuarioDestinatario != null)
+        {
+            txtViewNomeChat.setText(usuarioDestinatario.getNome());
+            String foto = usuarioDestinatario.getFoto();
+            if(foto != null && !foto.isEmpty())
+            {
+                Uri url = Uri.parse(foto);
+                Glide.with(chatActivity.this).load(url).into(circleImageFoto);
+            }
+            else
+            {
+                circleImageFoto.setImageResource(R.drawable.padrao);
+            }
+            idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getNumeroTelefone());
+            adapter = new MensagensAdapter(mensagens, getApplicationContext());
+            idUsuarioRemetente = UsuarioFirebase.getIdentificadorUsuario();
+            database = ConfiguracaoFirebase.getDatabaseFirebase();
+            mensagensRef = database.child("mensagens").child(idUsuarioRemetente).child(idUsuarioDestinatario);
+            layoutManager = new LinearLayoutManager(getApplicationContext());
+            recyclerViewMessages.setLayoutManager(layoutManager);
+            recyclerViewMessages.setHasFixedSize(true);
+            recyclerViewMessages.setAdapter(adapter);
+        }
     }
 
     @Override
@@ -172,19 +183,6 @@ public class chatActivity extends AppCompatActivity {
                             });
                         }
                     });
-                    uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred()) / taskSnapshot.getTotalByteCount();
-                            System.out.println("Upload is " + progress + "% done");
-                        }
-                    }).addOnPausedListener(new OnPausedListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onPaused(UploadTask.TaskSnapshot taskSnapshot) {
-                            System.out.println("Upload is paused");
-                        }
-                    });
-
                 }
 
             }
@@ -215,12 +213,22 @@ public class chatActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        sharedPreferences = this.getSharedPreferences("userChat", this.MODE_PRIVATE);
+        String saved = sharedPreferences.getString("UserChatSaved", null);
+        if(saved != null && usuarioDestinatario == null){
+            usuarioDestinatario = new Gson().fromJson(saved, Usuario.class);
+        }
+        sharedPreferences.edit().putString("UserChatSaved",null).apply();
+        carregarInicio();
         recuperarMensagens();
         super.onStart();
     }
 
+
+
     @Override
     protected void onStop() {
+        sharedPreferences.edit().putString("UserChatSaved", new Gson().toJson(usuarioDestinatario)).apply();
         mensagensRef.removeEventListener(childEventListenerMensagens);
         super.onStop();
     }

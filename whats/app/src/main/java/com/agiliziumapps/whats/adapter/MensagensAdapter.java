@@ -10,13 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.agiliziumapps.whats.FullScreenImage;
 import com.agiliziumapps.whats.Mensagem;
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.helper.UsuarioFirebase;
 import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.viewHolder> {
@@ -35,19 +33,16 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
     public viewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View item;
        if(viewType == TIPO_REMETENTE)
-       {
             item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_mensagem_remetente,parent,false);
-       }
        else
-       {
            item = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_mensagem_destinatario,parent,false);
-       }
+
        return new viewHolder(item);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull viewHolder holder, int position) {
-        Mensagem mensagem = mensagens.get(position);
+    public void onBindViewHolder(@NonNull final viewHolder holder, int position) {
+        final Mensagem mensagem = mensagens.get(position);
         String msg = mensagem.getMensagem();
         final String img = mensagem.getImagem();
         if(img != null)
@@ -85,9 +80,8 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
         Mensagem mensagem = mensagens.get(position);
         String idUsuario = UsuarioFirebase.getIdentificadorUsuario();
         if(idUsuario.equals(mensagem.getIdUsuario()))
-        {
             return TIPO_REMETENTE;
-        }
+
         return TIPO_DESTINATARIO;
     }
 
@@ -98,7 +92,6 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
             super(itemView);
             mensagem = itemView.findViewById(R.id.txtMensagemTexto);
             imagem = itemView.findViewById(R.id.imageMensagemFoto);
-
         }
     }
 }
