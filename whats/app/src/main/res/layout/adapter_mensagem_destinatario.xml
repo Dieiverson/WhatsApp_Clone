@@ -15,9 +15,9 @@
 
         <ImageView
             android:id="@+id/imageMensagemFoto"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="fitCenter"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
             android:visibility="visible"
             app:srcCompat="@drawable/padrao" />
 

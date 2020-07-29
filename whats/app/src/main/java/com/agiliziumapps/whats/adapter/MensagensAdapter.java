@@ -1,6 +1,7 @@
 package com.agiliziumapps.whats.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.agiliziumapps.whats.FullScreenImage;
 import com.agiliziumapps.whats.Mensagem;
 import com.agiliziumapps.whats.R;
 import com.agiliziumapps.whats.helper.UsuarioFirebase;
@@ -46,7 +49,7 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
     public void onBindViewHolder(@NonNull viewHolder holder, int position) {
         Mensagem mensagem = mensagens.get(position);
         String msg = mensagem.getMensagem();
-        String img = mensagem.getImagem();
+        final String img = mensagem.getImagem();
         if(img != null)
         {
             Uri url = Uri.parse(img);
@@ -56,6 +59,14 @@ public class MensagensAdapter extends RecyclerView.Adapter<MensagensAdapter.view
                     .thumbnail(Glide.with(context).load(R.drawable.loading))
                     .into(holder.imagem);
             holder.mensagem.setVisibility(View.GONE);
+            holder.imagem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, FullScreenImage.class);
+                    intent.putExtra("imagem",img);
+                    context.startActivity(intent);
+                }
+            });
         }
         else
         {

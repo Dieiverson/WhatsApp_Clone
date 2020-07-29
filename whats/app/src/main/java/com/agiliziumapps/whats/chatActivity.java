@@ -124,7 +124,7 @@ public class chatActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK)
         {
-            layoutManager.scrollToPosition(mensagens.size()-1);
+            //layoutManager.scrollToPosition(0);
             Bitmap imagem = null;
             try {
                 switch (requestCode)
@@ -165,7 +165,7 @@ public class chatActivity extends AppCompatActivity {
                                     Uri url = task.getResult();
                                     Mensagem mensagem = new Mensagem();
                                     mensagem.setIdUsuario(idUsuarioRemetente);
-                                    mensagem.setImagem("Imagem.jpeg");
+                                    mensagem.setMensagem("Foto");
                                     mensagem.setImagem(url.toString());
                                     salvarMensagem(mensagem);
                                 }
