@@ -184,7 +184,6 @@ public class chatActivity extends AppCompatActivity {
                         }
                     });
                 }
-
             }
             catch (Exception e)
             {
@@ -205,7 +204,7 @@ public class chatActivity extends AppCompatActivity {
     {
         Conversa conversaRemetente = new Conversa();
         conversaRemetente.setIdRemetente(idUsuarioRemetente);
-        conversaRemetente.setIdDesinatario(idUsuarioRemetente);
+        conversaRemetente.setIdDesinatario(idUsuarioDestinatario);
         conversaRemetente.setUltimaMensage(msg.getMensagem());
         conversaRemetente.setUsuarioExibicao(usuarioDestinatario);
         conversaRemetente.Salvar();
@@ -269,11 +268,14 @@ public class chatActivity extends AppCompatActivity {
     private void sendMessage()
     {
         String Textomsg = mensagem.getText().toString();
-        if(!Textomsg.isEmpty())
+        if(Textomsg == null)
+            return;
+
+        if(!Textomsg.trim().isEmpty())
         {
             Mensagem msg = new Mensagem();
             msg.setIdUsuario(idUsuarioRemetente);
-            msg.setMensagem(Textomsg);
+            msg.setMensagem(Textomsg.trim());
             salvarMensagem(msg);
             mensagem.setText("");
         }

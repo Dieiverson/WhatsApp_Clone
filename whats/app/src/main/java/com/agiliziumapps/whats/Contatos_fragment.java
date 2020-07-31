@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.provider.ContactsContract;
-import android.telephony.TelephonyManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 
 public class Contatos_fragment extends Fragment {
-
     private RecyclerView recyclerViewListaContatos;
     private contatosAdapter adapter;
     private ArrayList<Usuario> usuarios = new ArrayList<>();
@@ -118,8 +116,6 @@ public class Contatos_fragment extends Fragment {
             }
         });
     }
-
-
 
     @Override
     public void onStop() {
